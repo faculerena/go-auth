@@ -1,9 +1,4 @@
-package data
-
-import (
-	"crypto/sha256"
-	"fmt"
-)
+package database
 
 type User struct {
 	ID       int64
@@ -13,5 +8,6 @@ type User struct {
 }
 
 func (u *User) ValidateHash(pswhash []byte) bool {
-	return u.Passhash == fmt.Sprintf("%x", sha256.Sum256([]byte(pswhash)))
+
+	return u.Passhash == string(pswhash)
 }

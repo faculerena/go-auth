@@ -1,35 +1,58 @@
 package main
 
 import (
-	"database/sql"
 	"fmt"
-	data "github.com/faculerena/goauth/internal"
+	"github.com/faculerena/goauth/internal/token"
 	"github.com/faculerena/goauth/private"
-	"github.com/go-sql-driver/mysql"
+	"github.com/gorilla/mux"
 	"log"
+	"net/http"
 )
 
-var db *sql.DB
-
 func main() {
+	/*
+		db, err := database.Setup(private.GetConfig())
+		if err != nil {
+			log.Fatal(err)
+		}
 
-	if err := setupDB(private.GetConfig()); err != nil {
-		log.Fatal(err)
-	}
 
-	check, err := data.CheckUser(db)
+			check, err := database.CheckUser(db)
+			if err != nil {
+				log.Fatal(err)
+			}
+			fmt.Println(check)
+	*/
+
+	myToken, err := token.GenerateToken(private.Header(), private.Payload(), private.Secret())
 	if err != nil {
 		log.Fatal(err)
 	}
-	fmt.Println(check)
-}
+	fmt.Println(myToken)
 
-func setupDB(config mysql.Config) (err error) {
-	if db, err = sql.Open("mysql", config.FormatDSN()); err != nil {
-		return err
+	isOk, err := token.ValidateToken(myToken, private.Secret())
+
+	fmt.Println(isOk)
+
+	mainRouter := mux.NewRouter()
+	authRouter := mainRouter.PathPrefix("/auth").Subrouter()
+	authRouter.HandleFunc("/signup", token.SignupHandler)
+
+	// The Signin will send the JWT back as we are making microservices.
+	// The JWT token will make sure that other services are protected.
+	// So, ultimately, we would need a middleware
+	authRouter.HandleFunc("/signin", token.SigninHandler)
+
+	// Add the middleware to different subrouter
+	// HTTP server
+	// Add time outs
+	server := &http.Server{
+		Addr:    "127.0.0.1:9090",
+		Handler: mainRouter,
 	}
-	if pingErr := db.Ping(); pingErr != nil {
-		return err
+	err = server.ListenAndServe()
+	if err != nil {
+		fmt.Println("Error Booting the Server")
 	}
-	return nil
+
 }

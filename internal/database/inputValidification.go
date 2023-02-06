@@ -1,4 +1,4 @@
-package data
+package database
 
 import (
 	"bufio"
@@ -10,14 +10,13 @@ import (
 )
 
 func CheckUser(db *sql.DB) (b bool, err error) {
-
 	username, password, err := getCredentials()
 	if err != nil {
 		return false, nil
 	}
 
-	onlyentry := GetUser(db, username)
-	if onlyentry == nil {
+	onlyentry, exists := GetUser(db, username)
+	if !exists {
 		return false, nil
 	}
 

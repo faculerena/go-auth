@@ -1,4 +1,4 @@
-package data
+package database
 
 import (
 	"database/sql"
@@ -6,13 +6,15 @@ import (
 	"os"
 )
 
-func GetUser(db *sql.DB, username string) []User {
+func GetUser(db *sql.DB, username string) ([]User, bool) {
 	entry, err := db.Query("SELECT * FROM users WHERE username = ?", username)
+
 	if err != nil {
 		fmt.Println(err)
 		os.Exit(1)
 
 	}
+
 	var onlyentry []User
 	for entry.Next() {
 		var std User
@@ -22,6 +24,9 @@ func GetUser(db *sql.DB, username string) []User {
 
 		onlyentry = append(onlyentry, std)
 	}
+	if onlyentry == nil {
+		return nil, false
+	}
 
-	return onlyentry
+	return onlyentry, true
 }
