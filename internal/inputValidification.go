@@ -2,20 +2,21 @@ package data
 
 import (
 	"bufio"
+	"database/sql"
 	"fmt"
 	"golang.org/x/crypto/ssh/terminal"
 	"os"
 	"strings"
 )
 
-func CheckUser() (b bool, err error) {
+func CheckUser(db *sql.DB) (b bool, err error) {
 
 	username, password, err := getCredentials()
 	if err != nil {
 		return false, nil
 	}
 
-	onlyentry := data.GetUser(db, username)
+	onlyentry := GetUser(db, username)
 	if onlyentry == nil {
 		return false, nil
 	}

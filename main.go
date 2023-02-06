@@ -17,7 +17,7 @@ func main() {
 		log.Fatal(err)
 	}
 
-	check, err := data.CheckUser()
+	check, err := data.CheckUser(db)
 	if err != nil {
 		log.Fatal(err)
 	}
