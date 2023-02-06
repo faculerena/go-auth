@@ -8,9 +8,9 @@ import (
 	"net/http"
 )
 
-func getSignedToken() (string, error) {
+func getSignedToken(username string, passphrase string) (string, error) {
 
-	claimsMap := private.Payload()
+	claimsMap := private.Payload(username, passphrase)
 	secret := private.Secret()
 	header := private.Header()
 	tokenString, err := GenerateToken(header, claimsMap, secret)
@@ -63,7 +63,7 @@ func SigninHandler(rw http.ResponseWriter, r *http.Request) {
 		rw.Write([]byte("Incorrect Password"))
 		return
 	}
-	tokenString, err := getSignedToken()
+	tokenString, err := getSignedToken(r.Header["Username"][0], r.Header["Passwordhash"][0])
 	if err != nil {
 		fmt.Println(err)
 		rw.WriteHeader(http.StatusInternalServerError)

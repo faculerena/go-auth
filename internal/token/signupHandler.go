@@ -1,6 +1,7 @@
 package token
 
 import (
+	"fmt"
 	"github.com/faculerena/goauth/internal/database"
 	"github.com/faculerena/goauth/private"
 	"log"
@@ -25,12 +26,14 @@ func SignupHandler(rw http.ResponseWriter, r *http.Request) {
 		log.Fatal(err)
 	}
 
+	fmt.Println("this is the username", r.Header["Username"][0])
+
 	id, err := database.AddUser(db, database.User{
 		Username: r.Header["Username"][0],
-		Passhash: "r.Header[\"Passwordhash\"][0]",
+		Passhash: r.Header["Passwordhash"][0],
 	})
 
-	if id == -1 { //if -1 user already exists
+	if id == -1 { //if -1 user does not exist
 		rw.WriteHeader(http.StatusConflict)
 		rw.Write([]byte("Username already exists"))
 		return
