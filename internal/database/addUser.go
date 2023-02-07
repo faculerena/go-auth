@@ -7,8 +7,7 @@ import (
 
 func AddUser(db *sql.DB, user User) (int64, error) {
 
-	response, ok := GetUser(db, user.Username)
-	fmt.Println(response)
+	_, ok := GetUser(db, user.Username)
 	if ok {
 		return -1, nil //handling -1 as user already exists
 	}
