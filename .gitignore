@@ -1,3 +1,5 @@
 config.txt
 config.go
 /private
+dockerfile
+goauth

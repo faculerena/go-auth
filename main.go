@@ -19,7 +19,10 @@ func main() {
 
 	authRouter.HandleFunc("/signin", token.SigninHandler)
 
-	//	authRouter.Use(token.TokenValidationMiddleware) // remove comment if you want to test the token received
+	authRouter.Handle("/check", token.TokenValidationMiddleware(http.HandlerFunc(func(rw http.ResponseWriter, r *http.Request) {
+		rw.WriteHeader(http.StatusOK)
+		rw.Write([]byte("Token is valid"))
+	}))).Methods("GET")
 
 	server := &http.Server{
 		Addr:    "127.0.0.1:9090",
