@@ -58,13 +58,18 @@ tokenPayload.go
 package private
 
 func Payload(username string, passphrase string) (payload map[string]string) {
+	currentTime := time.Now()
+	expirationTime := currentTime.Add(time.Minute)
 
 	payload = map[string]string{
-		"Username":   username,
-		"Passphrase": passphrase,
+		"usr": username,
+		"psp": passphrase,
+		"exp": expirationTime.Format(time.RFC3339),
 	}
+
 	return payload
 }
+
 ```
 
 tokenSecret.go 
