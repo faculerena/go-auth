@@ -3,9 +3,23 @@ Simple go auth service with JWT
 
 # How it works?
 
+You can log in
 ```
 curl http://localhost:9090/auth/signin -H 'Username:____' -H 'Passwordhash:_____'
 ```
+
+You can sign in 
+```
+curl http://localhost:9090/auth/signup -H 'Username:____' -H 'Passwordhash:_____'
+```
+
+You can check if a token is valid! (By default, the token expires 1 minute after being created)
+```
+curl http://localhost:9090/auth/check -H 'Token:_____'
+```
+
+
+
 
 
 If you send a request with 'Username' and 'Passwordhash' as the header, the service will return the token if the credentials are valid.
