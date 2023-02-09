@@ -19,7 +19,7 @@ func main() {
 
 	authRouter.HandleFunc("/signin", token.SigninHandler)
 
-	//	authRouter.Use(token.TokenValidationMiddleware) remove comment if you want to test the token received
+	//	authRouter.Use(token.TokenValidationMiddleware) // remove comment if you want to test the token received
 
 	server := &http.Server{
 		Addr:    "127.0.0.1:9090",

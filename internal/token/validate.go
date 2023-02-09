@@ -4,8 +4,16 @@ import (
 	"crypto/hmac"
 	"crypto/sha256"
 	"encoding/base64"
+	"encoding/json"
 	"strings"
+	"time"
 )
+
+type Claims struct {
+	Usr string    `json:"usr"`
+	Psp string    `json:"psp"`
+	Exp time.Time `json:"exp"`
+}
 
 func ValidateToken(token string, secret string) (bool, error) {
 	splitToken := strings.Split(token, ".")
@@ -30,5 +38,16 @@ func ValidateToken(token string, secret string) (bool, error) {
 	if signature != splitToken[2] {
 		return false, nil
 	}
+
+	var claims Claims
+	err = json.Unmarshal(payload, &claims)
+	if err != nil {
+		return false, err
+	}
+
+	if time.Now().After(claims.Exp) {
+		return false, nil
+	}
+
 	return true, nil
 }
